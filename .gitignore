@@ -9,3 +9,6 @@ __pycache__/
 faiss.index
 faiss_metadata.json
 prepared_chunks.json
+
+# Environment variables
+.env

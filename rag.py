@@ -1,16 +1,21 @@
 import json
 import faiss
 import numpy as np
-import subprocess
+import os
+import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
 
 # ---------------- CONFIG ----------------
 INDEX_FILE = "faiss.index"
 METADATA_FILE = "faiss_metadata.json"
-MODEL_NAME = "all-MiniLM-L6-v2"
+EMBED_MODEL = "all-MiniLM-L6-v2"
+GEMINI_MODEL = "models/gemini-flash-latest"
 TOP_K = 3
-OLLAMA_MODEL = "mistral"
 # ----------------------------------------
+
+# Configure Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+gemini = genai.GenerativeModel(GEMINI_MODEL)
 
 def load_index():
     index = faiss.read_index(INDEX_FILE)
@@ -18,12 +23,9 @@ def load_index():
         metadata = json.load(f)
     return index, metadata
 
-def embed_query(query, model):
-    return model.encode([query], convert_to_numpy=True)
-
-def retrieve(query, model, index, metadata, top_k):
-    query_vec = embed_query(query, model)
-    distances, indices = index.search(query_vec, top_k)
+def retrieve(query, model, index, metadata, k):
+    query_vec = model.encode([query], convert_to_numpy=True)
+    distances, indices = index.search(query_vec, k)
 
     results = []
     for idx in indices[0]:
@@ -31,16 +33,18 @@ def retrieve(query, model, index, metadata, top_k):
 
     return results
 
-def build_prompt(query, retrieved_chunks):
+def build_prompt(query, chunks):
     context = "\n\n".join(
-        f"- {chunk['source']}:\n{chunk['text']}"
-        for chunk in retrieved_chunks
+        f"[Source: {c.get('source', 'unknown')}]\n{c.get('text', '')}"
+        for c in chunks
     )
 
     prompt = f"""
-You are an assistant answering ONLY from the provided context.
-Do NOT use outside knowledge.
-If the answer is not present, say "I don't know".
+You are Dr. B. R. Ambedkar.
+
+Answer the question ONLY using the context below.
+Be factual, concise, and respectful.
+If the answer is not in the context, say so clearly.
 
 Context:
 {context}
@@ -52,33 +56,32 @@ Answer:
 """
     return prompt.strip()
 
-def call_llm(prompt):
-    result = subprocess.run(
-        ["ollama", "run", OLLAMA_MODEL],
-        input=prompt,
-        text=True,
-        capture_output=True
-    )
-    return result.stdout.strip()
+def generate_answer(prompt):
+    response = gemini.generate_content(prompt)
+    return response.text
 
 def main():
-    print("Loading model and index...")
-    model = SentenceTransformer(MODEL_NAME)
+    print("Loading embedding model...")
+    embed_model = SentenceTransformer(EMBED_MODEL)
+
+    print("Loading FAISS index...")
     index, metadata = load_index()
 
+    print("\nRAG system ready (Gemini-powered)")
+    print("Type 'exit' to quit\n")
+
     while True:
-        query = input("\nAsk a question (or 'exit'): ")
+        query = input("Ask a question: ")
         if query.lower() == "exit":
             break
 
-        retrieved = retrieve(query, model, index, metadata, TOP_K)
+        retrieved = retrieve(query, embed_model, index, metadata, TOP_K)
         prompt = build_prompt(query, retrieved)
+        answer = generate_answer(prompt)
 
-        print("\nThinking...\n")
-        answer = call_llm(prompt)
-
-        print("ANSWER:\n")
+        print("\n--- Answer ---")
         print(answer)
+        print("--------------\n")
 
 if __name__ == "__main__":
     main()
