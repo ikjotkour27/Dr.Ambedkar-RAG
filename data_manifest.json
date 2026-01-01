@@ -9,5 +9,224 @@
     "author":"B. R. Ambedkar",
     "year": "1937",
     "category": "Essay / Written Response"
+  },
+
+ "data2.txt":{
+    "author":"B. R. Ambedkar",
+    "year": "1937",
+    "category": "Essay / Written Response"
   }
+,
+  "data3.txt":{
+    "author":"B. R. Ambedkar",
+    "year": "1937",
+    "category": "Essay / Written Response"
+  },
+ "data4.txt": {
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Preface to the Second Edition",
+  "type": "Political and Social Essay",
+  "category": "Preface / Editorial Context",
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "unknown"
+},
+"data5.txt": {
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Preface to the Third Edition",
+  "type": "Political and Social Essay",
+  "category": "Preface / Editorial Context",
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1937"
+},
+"data6.txt": {
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Prologue",
+  "type": "Political and Social Essay",
+  "category": "Prologue / Publication Context",
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
 }
+,
+"data7.txt": {
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Prologue",
+  "type": "Political and Social Essay",
+  "category": "Prologue / Correspondence and Publication Context",
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
+}
+
+,
+"data8.txt": {
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Speech (Prepared but Not Delivered)",
+  "type": "Political and Social Essay",
+  "category": "Core Argument / Social and Political Critique",
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
+}
+,
+"data9.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "year": "1936",
+  "section": "Speech (Prepared but Not Delivered)",
+  "subsection": "Critique of Socialism, Religion, and Caste",
+  "type": "Political and Social Essay",
+  "category": "Core Argument / Economic vs Social Reform",
+  "themes": [
+    "Critique of Socialism",
+    "Religion as Power",
+    "Caste as Social Obstacle",
+    "Limits of Economic Reform",
+    "Division of Labour vs Division of Labourers"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1"
+}
+,
+"data10.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "year": "1936",
+  "section": "Speech (Prepared but Not Delivered)",
+  "subsection": "Biological, Racial, and Sociological Critique of Caste",
+  "type": "Political and Social Essay",
+  "category": "Core Argument / Anti-Caste Theory",
+  "themes": [
+    "Caste vs Race",
+    "Critique of Eugenics",
+    "Myth of Hindu Society",
+    "Caste Consciousness",
+    "Anti-social Nature of Caste",
+    "Absence of National Unity",
+    "Communication as Basis of Society",
+    "Caste and Tribal Exclusion"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1"
+},
+"data11.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "year": "1936",
+  "section": "Speech (Prepared but Not Delivered)",
+  "subsection": "Caste as an Obstacle to Reform, Solidarity, and Moral Life",
+  "type": "Political and Social Essay",
+  "category": "Core Argument / Ethics, Reform, and Social Solidarity",
+  "themes": [
+    "Suppression of Social Mobility",
+    "Anti-reform Nature of Caste",
+    "Caste and Missionary Failure",
+    "Impossibility of Shuddhi and Sanghatan",
+    "Lack of Social Solidarity",
+    "Caste and Hindu Weakness",
+    "Excommunication as Social Death",
+    "Caste and Moral Degradation",
+    "Destruction of Public Spirit",
+    "Caste-bound Morality"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1"
+}
+,
+"data12.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "year": "1936",
+  "section": "Speech (Prepared but Not Delivered)",
+  "subsection": "Ideal Society and Critique of Chaturvarnya",
+  "type": "Political and Social Essay",
+  "category": "Core Argument / Social Philosophy",
+  "themes": [
+    "Liberty",
+    "Equality",
+    "Fraternity",
+    "Democracy as social life",
+    "Critique of Chaturvarnya",
+    "Caste and Slavery",
+    "Social Mobility",
+    "Denial of Education and Arms",
+    "Failure of Varna System"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1"
+}
+,
+"data13.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Speech (Prepared but Not Delivered)",
+  "type": "Political and Social Essay",
+  "category": "Critique of Chaturvarnya and Religious Basis of Caste",
+  "themes": [
+    "Failure of Chaturvarnya",
+    "Brahmin–Kshatriya conflict",
+    "Caste vs Varna",
+    "Caste among Hindus vs Non-Hindus",
+    "Social cohesion and nationhood",
+    "Inter-caste marriage as remedy",
+    "Religion as foundation of caste",
+    "Critique of Shastras",
+    "Social reform vs ritual reform"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
+},
+"data14.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Speech (Prepared but Not Delivered)",
+  "type": "Political and Social Essay",
+  "category": "Limits of Social Reform and Critique of Religious Authority",
+  "themes": [
+    "Impossibility of caste reform within Hindu orthodoxy",
+    "Religious sanction of caste",
+    "Authority of Shastras and Vedas",
+    "Brahmins as intellectual class",
+    "Graded hierarchy of castes",
+    "Limits of reason and morality in Hindu society",
+    "Prayaschitta and perpetuation of caste",
+    "Critique of Hindu religion as rule-based law",
+    "Religion of principles vs religion of rules",
+    "Destruction of Brahminism",
+    "Democratization of priesthood",
+    "Liberty, Equality, Fraternity as religious foundation"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
+}
+,
+"data15.txt":{
+  "author": "B. R. Ambedkar",
+  "title": "Annihilation of Caste",
+  "section": "Conclusion / Final Address to Hindu Audience",
+  "type": "Political and Social Essay",
+  "category": "Conclusion and Moral Appeal",
+  "themes": [
+    "Survival value of morality and religion",
+    "Critique of unworkable moral systems",
+    "Need for selective social inheritance",
+    "Rejection of blind worship of the past",
+    "Change as the law of life",
+    "Responsibility of Hindus for caste reform",
+    "Caste as obstacle to national strength",
+    "Social reform more important than Swaraj",
+    "Casteless society as condition for freedom",
+    "Ambedkar’s personal withdrawal from Hindu fold",
+    "Final appeal for annihilation of caste"
+  ],
+  "source": "Dr. Babasaheb Ambedkar Writings and Speeches Vol. 1",
+  "year": "1936"
+}
+
+
+
+
+
+
+
+
+}
+
