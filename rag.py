@@ -59,6 +59,23 @@ Answer:
 def generate_answer(prompt):
     response = gemini.generate_content(prompt)
     return response.text
+# ---------- API HELPER FUNCTION ----------
+
+_embed_model = None
+_index = None
+_metadata = None
+
+def answer_question(query: str) -> str:
+    global _embed_model, _index, _metadata
+
+    if _embed_model is None:
+        _embed_model = SentenceTransformer(EMBED_MODEL)
+        _index, _metadata = load_index()
+
+    retrieved = retrieve(query, _embed_model, _index, _metadata, TOP_K)
+    prompt = build_prompt(query, retrieved)
+    return generate_answer(prompt)
+
 
 def main():
     print("Loading embedding model...")
