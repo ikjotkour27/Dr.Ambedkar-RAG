@@ -11,7 +11,10 @@ from rag import answer_question
 app = FastAPI(
     title="Dr. Ambedkar RAG API",
     description="RAG-based QA system powered by FAISS + Gemini",
-    version="1.0"
+    version="1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
 )
 
 class Query(BaseModel):
