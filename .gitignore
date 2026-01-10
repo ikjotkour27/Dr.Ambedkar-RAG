@@ -5,10 +5,5 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Generated files
-faiss.index
-faiss_metadata.json
-prepared_chunks.json
-
 # Environment variables
 .env
