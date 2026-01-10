@@ -1,79 +1,20 @@
-import json
-import faiss
-import os
-import google.generativeai as genai
+from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
+import google.generativeai as genai
+import os
 
-# ---------------- CONFIG ----------------
-INDEX_FILE = "faiss.index"
-METADATA_FILE = "faiss_metadata.json"
-EMBED_MODEL = "all-MiniLM-L3-v2"   # same model used to build FAISS
-GEMINI_MODEL = "models/gemini-flash-latest"
-TOP_K = 3
-# ----------------------------------------
+client = QdrantClient(
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_API_KEY")
+)
 
-# Configure Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-gemini = genai.GenerativeModel(GEMINI_MODEL)
+model = SentenceTransformer("all-MiniLM-L3-v2")
 
-# Load embedding model ONCE
-embed_model = SentenceTransformer(EMBED_MODEL)
-
-# Load FAISS and metadata ONCE
-print("Loading FAISS index...")
-index = faiss.read_index(INDEX_FILE)
-
-print("Loading metadata...")
-with open(METADATA_FILE, "r", encoding="utf-8") as f:
-    metadata = json.load(f)
-
-
-def retrieve(query, k):
-    query_vec = embed_model.encode([query], convert_to_numpy=True)
-    distances, indices = index.search(query_vec, k)
-
-    results = []
-    for idx in indices[0]:
-        results.append(metadata[idx])
-
-    return results
-
-
-def build_prompt(query, chunks):
-    context = "\n\n".join(
-        f"[Source: {c.get('metadata', {}).get('source', 'unknown')}]\n{c.get('text', '')}"
-        for c in chunks
+def retrieve(query):
+    vec = model.encode(query).tolist()
+    results = client.search(
+        collection_name="ambedkar_rag",
+        query_vector=vec,
+        limit=3
     )
-
-    prompt = f"""
-You are Dr. B. R. Ambedkar.
-
-Answer in FIRST PERSON (use “I”, “me”, “my”).
-Do NOT refer to Dr. B. R. Ambedkar in third person.
-
-Answer the question using ONLY the context provided below.
-Be factual, concise, and respectful.
-
-If the answer is not present in the context, say:
-"I do not find this information in the provided context."
-
-Context:
-{context}
-
-Question:
-{query}
-
-Answer:
-"""
-    return prompt.strip()
-
-
-def generate_answer(prompt):
-    response = gemini.generate_content(prompt)
-    return response.text
-
-
-def answer_question(query: str) -> str:
-    retrieved = retrieve(query, TOP_K)
-    prompt = build_prompt(query, retrieved)
-    return generate_answer(prompt)
+    return [r.payload for r in results]
