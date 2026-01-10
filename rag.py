@@ -1,14 +1,14 @@
 import json
 import faiss
-import numpy as np
 import os
 import google.generativeai as genai
+from sentence_transformers import SentenceTransformer
 
 # ---------------- CONFIG ----------------
 INDEX_FILE = "faiss.index"
 METADATA_FILE = "faiss_metadata.json"
+EMBED_MODEL = "all-MiniLM-L3-v2"   # same model used to build FAISS
 GEMINI_MODEL = "models/gemini-flash-latest"
-EMBED_MODEL = "models/embedding-001"
 TOP_K = 3
 # ----------------------------------------
 
@@ -16,44 +16,20 @@ TOP_K = 3
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 gemini = genai.GenerativeModel(GEMINI_MODEL)
 
-_index = None
-_metadata = None
+# Load embedding model ONCE
+embed_model = SentenceTransformer(EMBED_MODEL)
+
+# Load FAISS and metadata ONCE
+print("Loading FAISS index...")
+index = faiss.read_index(INDEX_FILE)
+
+print("Loading metadata...")
+with open(METADATA_FILE, "r", encoding="utf-8") as f:
+    metadata = json.load(f)
 
 
-def load_index():
-    """
-    Load FAISS index and metadata only once.
-    """
-    global _index, _metadata
-    if _index is None:
-        print("Loading FAISS index...")
-        _index = faiss.read_index(INDEX_FILE)
-
-        print("Loading metadata...")
-        with open(METADATA_FILE, "r", encoding="utf-8") as f:
-            _metadata = json.load(f)
-
-    return _index, _metadata
-
-
-def embed_query(query: str):
-    try:
-        embedding = genai.embed_content(
-            model=EMBED_MODEL,
-            content=query
-        )
-        return np.array([embedding["embedding"]], dtype="float32")
-    except Exception as e:
-        print("Embedding error:", e)
-        raise
-
-
-
-def retrieve(query, index, metadata, k):
-    """
-    Retrieve top-k relevant chunks from FAISS.
-    """
-    query_vec = embed_query(query)
+def retrieve(query, k):
+    query_vec = embed_model.encode([query], convert_to_numpy=True)
     distances, indices = index.search(query_vec, k)
 
     results = []
@@ -64,9 +40,6 @@ def retrieve(query, index, metadata, k):
 
 
 def build_prompt(query, chunks):
-    """
-    Build the RAG prompt in first-person style as Dr. B. R. Ambedkar.
-    """
     context = "\n\n".join(
         f"[Source: {c.get('metadata', {}).get('source', 'unknown')}]\n{c.get('text', '')}"
         for c in chunks
@@ -96,34 +69,11 @@ Answer:
 
 
 def generate_answer(prompt):
-    """
-    Generate final answer using Gemini LLM.
-    """
     response = gemini.generate_content(prompt)
     return response.text
 
 
 def answer_question(query: str) -> str:
-    """
-    Main API helper called by FastAPI.
-    """
-    index, metadata = load_index()
-    retrieved = retrieve(query, index, metadata, TOP_K)
+    retrieved = retrieve(query, TOP_K)
     prompt = build_prompt(query, retrieved)
     return generate_answer(prompt)
-
-
-# ---------------- LOCAL TEST MODE ----------------
-if __name__ == "__main__":
-    print("RAG system ready (Gemini-powered, memory-safe)")
-    print("Type 'exit' to quit\n")
-
-    while True:
-        query = input("Ask a question: ")
-        if query.lower() == "exit":
-            break
-
-        answer = answer_question(query)
-        print("\n--- Answer ---")
-        print(answer)
-        print("--------------\n")
