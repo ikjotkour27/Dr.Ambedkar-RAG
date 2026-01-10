@@ -1,65 +1,31 @@
-import json
-import numpy as np
-import faiss
+from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
-from tqdm import tqdm
+import json
 
-# ---------------- CONFIG ----------------
-CHUNKS_FILE = "prepared_chunks.json"
-INDEX_FILE = "faiss.index"
-METADATA_FILE = "faiss_metadata.json"
-MODEL_NAME = "all-MiniLM-L3-v2"
-# ----------------------------------------
+client = QdrantClient(
+    url="YOUR_QDRANT_URL",
+    api_key="YOUR_QDRANT_API_KEY"
+)
 
-def main():
-    # Load chunks
-    with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
-        chunks = json.load(f)
-        print("Total chunks found:", len(chunks))
+model = SentenceTransformer("all-MiniLM-L3-v2")
 
-        # LIMITED CHUNKS HERE
-        chunks = chunks[:50]   
-        print("Chunks used:", len(chunks))
+with open("prepared_chunks.json") as f:
+    chunks = json.load(f)
 
-    texts = [c["text"] for c in chunks]
+texts = [c["text"] for c in chunks]
+vectors = model.encode(texts).tolist()
 
-    metadata = [
-        {
-            "text": c["text"],
-            "metadata": c["metadata"]
-        }
-        for c in chunks
-    ]
+points = []
+for i, c in enumerate(chunks):
+    points.append({
+        "id": i,
+        "vector": vectors[i],
+        "payload": c
+    })
 
-    print(f"Loaded {len(texts)} chunks")
+client.upsert(
+    collection_name="ambedkar_rag",
+    points=points
+)
 
-    # Load embedding model
-    model = SentenceTransformer(MODEL_NAME)
-
-    # Create embeddings
-    print("Creating embeddings...")
-    embeddings = model.encode(
-        texts,
-        show_progress_bar=True,
-        convert_to_numpy=True
-    )
-
-    dim = embeddings.shape[1]
-    print(f"Embedding dimension: {dim}")
-
-    # Build FAISS index
-    index = faiss.IndexFlatL2(dim)
-    index.add(embeddings)
-
-    print(f"FAISS index contains {index.ntotal} vectors")
-
-    # Save index + metadata
-    faiss.write_index(index, INDEX_FILE)
-
-    with open(METADATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(metadata, f, indent=2, ensure_ascii=False)
-
-    print("Saved FAISS index and metadata")
-
-if __name__ == "__main__":
-    main()
+print("Vectors uploaded to Qdrant")
