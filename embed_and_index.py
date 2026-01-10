@@ -18,7 +18,7 @@ def main():
         print("Total chunks found:", len(chunks))
 
         # LIMITED CHUNKS HERE
-        chunks = chunks[:200]   
+        chunks = chunks[:50]   
         print("Chunks used:", len(chunks))
 
     texts = [c["text"] for c in chunks]
