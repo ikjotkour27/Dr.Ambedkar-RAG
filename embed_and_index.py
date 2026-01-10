@@ -8,13 +8,18 @@ from tqdm import tqdm
 CHUNKS_FILE = "prepared_chunks.json"
 INDEX_FILE = "faiss.index"
 METADATA_FILE = "faiss_metadata.json"
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "all-MiniLM-L3-v2"
 # ----------------------------------------
 
 def main():
     # Load chunks
     with open(CHUNKS_FILE, "r", encoding="utf-8") as f:
         chunks = json.load(f)
+        print("Total chunks found:", len(chunks))
+
+        # LIMITED CHUNKS HERE
+        chunks = chunks[:200]   
+        print("Chunks used:", len(chunks))
 
     texts = [c["text"] for c in chunks]
 
