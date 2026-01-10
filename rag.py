@@ -37,15 +37,16 @@ def load_index():
 
 
 def embed_query(query: str):
-    """
-    Create embedding using Gemini embedding API.
-    This avoids loading any heavy ML model locally.
-    """
-    embedding = genai.embed_content(
-        model=EMBED_MODEL,
-        content=query
-    )
-    return np.array([embedding["embedding"]], dtype="float32")
+    try:
+        embedding = genai.embed_content(
+            model=EMBED_MODEL,
+            content=query
+        )
+        return np.array([embedding["embedding"]], dtype="float32")
+    except Exception as e:
+        print("Embedding error:", e)
+        raise
+
 
 
 def retrieve(query, index, metadata, k):
