@@ -1,14 +1,25 @@
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 client = QdrantClient(
-    url="YOUR_QDRANT_URL",
-    api_key="YOUR_QDRANT_API_KEY"
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_API_KEY")
 )
 
-client.recreate_collection(
-    collection_name="ambedkar_rag",
-    vectors_config=VectorParams(size=384, distance=Distance.COSINE)
-)
+COLLECTION_NAME = "ambedkar_rag"
 
-print("Collection created")
+if not client.collection_exists(COLLECTION_NAME):
+    client.create_collection(
+        collection_name=COLLECTION_NAME,
+        vectors_config=VectorParams(
+            size=384,  # MiniLM vector size
+            distance=Distance.COSINE
+        )
+    )
+    print("Collection created")
+else:
+    print("Collection already exists")

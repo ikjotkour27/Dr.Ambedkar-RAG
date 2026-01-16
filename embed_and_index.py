@@ -1,19 +1,24 @@
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv
+import os
 import json
 
+load_dotenv()
+
 client = QdrantClient(
-    url="YOUR_QDRANT_URL",
-    api_key="YOUR_QDRANT_API_KEY"
+    url=os.getenv("QDRANT_URL"),
+    api_key=os.getenv("QDRANT_API_KEY"),
+    timeout=60
 )
 
-model = SentenceTransformer("all-MiniLM-L3-v2")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
-with open("prepared_chunks.json") as f:
+with open("prepared_chunks.json", "r", encoding="utf-8") as f:
     chunks = json.load(f)
 
 texts = [c["text"] for c in chunks]
-vectors = model.encode(texts).tolist()
+vectors = model.encode(texts, show_progress_bar=True).tolist()
 
 points = []
 for i, c in enumerate(chunks):

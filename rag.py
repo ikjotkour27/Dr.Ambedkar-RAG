@@ -1,31 +1,35 @@
-# rag.py
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
-import google.generativeai as genai
-import os
+from google import genai
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-client = QdrantClient(
+# Qdrant
+qdrant = QdrantClient(
     url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_API_KEY")
+    api_key=os.getenv("QDRANT_API_KEY"),
+    timeout=60
 )
 
-model = SentenceTransformer("all-MiniLM-L3-v2")
+# Embedding model
+embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-gemini = genai.GenerativeModel("gemini-pro")
+# Gemini client (new SDK)
+gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def retrieve(query, top_k=3):
-    vec = model.encode(query).tolist()
-    results = client.search(
+    vector = embedder.encode(query).tolist()
+    results = qdrant.query_points(
         collection_name="ambedkar_rag",
-        query_vector=vec,
-        limit=top_k
+        prefetch=[],
+        query=vector,
+        limit=top_k,
+        with_payload=True
     )
-    return [r.payload for r in results]
+    return [p.payload for p in results.points]
 
 
 def answer_question(question):
@@ -45,8 +49,13 @@ Context:
 Question:
 {question}
 
-Answer in a clear, concise and academic tone. If the answer is not found in the context, say so.
+Answer in a clear, concise and academic tone. 
+If the answer is not found in the context, say so clearly.
 """
 
-    response = gemini.generate_content(prompt)
+    response = gemini_client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=prompt
+    )
+
     return response.text.strip()
