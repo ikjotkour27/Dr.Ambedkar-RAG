@@ -4,6 +4,7 @@ from google import genai
 from dotenv import load_dotenv
 import os
 
+print("RAG loaded")
 load_dotenv()
 
 # Qdrant

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from rag import answer_question
 
+print("API loaded")
 load_dotenv()
 
 app = FastAPI(
