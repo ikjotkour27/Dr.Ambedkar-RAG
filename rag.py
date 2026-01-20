@@ -52,11 +52,10 @@ Context:
 Question:
 {question}
 
-Answer in a clear, concise and academic tone. 
+Answer in a clear, concise and academic tone.
 If the answer is not found in the context, say so clearly.
 """
 
-   response = model.generate_content(prompt)
-
-
+    response = model.generate_content(prompt)
     return response.text.strip()
+
