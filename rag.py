@@ -1,6 +1,6 @@
 from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
@@ -17,8 +17,10 @@ qdrant = QdrantClient(
 # Embedding model
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Gemini client (new SDK)
-gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash")
+
 
 
 def retrieve(query, top_k=3):
@@ -54,9 +56,7 @@ Answer in a clear, concise and academic tone.
 If the answer is not found in the context, say so clearly.
 """
 
-    response = gemini_client.models.generate_content(
-        model="gemini-3-flash-preview",
-        contents=prompt
-    )
+   response = model.generate_content(prompt)
+
 
     return response.text.strip()
