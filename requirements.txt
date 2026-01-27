@@ -5,3 +5,6 @@ sentence-transformers
 google-genai
 python-dotenv
 numpy
+
+python-dotenv
+pyttsx3
